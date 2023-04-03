@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.net.URI;
+import java.util.Optional;
 
 @CrossOrigin
 @RestController
@@ -28,6 +28,9 @@ public class ArticleController {
 
     @PostMapping()
     ResponseEntity<?> createArticle(@RequestBody Article article){
+        if( article== null){
+            throw new IllegalArgumentException("Article can not be empty");
+        }
         Article savedArticle = service.createArticle(article);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
@@ -41,5 +44,16 @@ public class ArticleController {
         service.deleteArticle(articleId);
         return ResponseEntity.ok().build();
     }
-
+    @PutMapping("/{articleId}")
+    ResponseEntity<?> updateArticle(@PathVariable Long articleId, @RequestBody Article article){
+        Optional<Article> existingArticle = (Optional<Article>) service.getSpecificArticle(articleId);
+        if(!existingArticle.isPresent()){
+            return ResponseEntity.notFound().build();
+        }
+        Article articles = existingArticle.get();
+        articles.setArticleText(article.getArticleText());
+        articles.setArticleTitle(article.getArticleTitle());
+        service.updateArticle(article);
+        return ResponseEntity.ok().build();
+    }
 }

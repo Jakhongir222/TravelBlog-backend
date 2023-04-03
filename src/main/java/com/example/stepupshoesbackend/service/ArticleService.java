@@ -4,7 +4,6 @@ import com.example.stepupshoesbackend.model.Article;
 import com.example.stepupshoesbackend.repository.ArticleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
 
 @Service
 public class ArticleService {
@@ -27,5 +26,11 @@ public class ArticleService {
 
     public void deleteArticle(Long articleId) {
          repository.deleteById(articleId);
+    }
+
+
+
+    public void updateArticle(Article article) {
+         repository.save(article);
     }
 }
